@@ -1,6 +1,6 @@
 [package]
 name = "pacman"
-version = "1.0.0"
+version = "1.1.0"
 description = "Pac-Man — Rust (WASM) + TypeScript desktop app"
 authors = ["rachatarath-wq"]
 edition = "2021"
