@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pac-Man · Rust + WASM</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --wall: #1b1bd8;
+        --wall-glow: #4f4fff;
+        --accent: #ffe000;
+        --ink: #0a0a12;
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        height: 100%;
+        background: #05050d;
+        color: #eaeaff;
+        font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+        overflow: hidden;
+      }
+      #app {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .hud {
+        display: flex;
+        gap: 2.5rem;
+        padding: 0.9rem 0 0.4rem;
+      }
+      .stat { text-align: center; min-width: 5rem; }
+      .stat .label {
+        display: block;
+        font-size: 0.65rem;
+        letter-spacing: 0.18em;
+        color: #6b6b8a;
+      }
+      .stat .value {
+        display: block;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--accent);
+        font-variant-numeric: tabular-nums;
+      }
+      #canvas-wrap {
+        position: relative;
+        width: 100%;
+        flex: 1;
+        min-height: 0;
+      }
+      canvas { display: block; }
+      .overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+      }
+      .overlay span {
+        font-size: clamp(1.6rem, 5vw, 3rem);
+        letter-spacing: 0.12em;
+        color: var(--accent);
+        text-shadow: 0 0 12px #ffbf00, 0 0 30px #ff9d00;
+        background: rgba(5, 5, 13, 0.55);
+        padding: 0.4rem 1rem;
+        border-radius: 8px;
+      }
+      .controls {
+        display: flex;
+        gap: 0.7rem;
+        padding: 0.7rem 0 0.4rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      button {
+        background: #1d1de0;
+        color: #fff;
+        border: 1px solid #4f4fff;
+        border-radius: 7px;
+        padding: 0.5rem 1.1rem;
+        font-size: 0.95rem;
+        font-family: inherit;
+        cursor: pointer;
+        transition: background 120ms ease;
+      }
+      button:hover { background: #3434ff; }
+      button:active { transform: translateY(1px); }
+      .hint {
+        color: #57576f;
+        font-size: 0.72rem;
+        padding-bottom: 0.6rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <header class="hud">
+        <div class="stat"><span class="label">SCORE</span><span class="value" id="score">0</span></div>
+        <div class="stat"><span class="label">LIVES</span><span class="value" id="lives">3</span></div>
+        <div class="stat"><span class="label">LEVEL</span><span class="value" id="level">1</span></div>
+      </header>
+
+      <div id="canvas-wrap">
+        <canvas id="game"></canvas>
+        <div class="overlay"><span id="overlay-text">READY!</span></div>
+      </div>
+
+      <div class="controls">
+        <button id="btn-start">Start</button>
+        <button id="btn-reset">Reset</button>
+        <button id="btn-mute">Mute</button>
+      </div>
+      <p class="hint">Arrows / WASD to move · Space or P to pause · Enter to start</p>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
