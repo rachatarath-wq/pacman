@@ -1,6 +1,10 @@
 # Rust
 target/
 Cargo.lock
+!src-tauri/Cargo.lock
+
+# Tauri (generated at build time)
+src-tauri/gen/
 
 # wasm-pack output
 pkg/

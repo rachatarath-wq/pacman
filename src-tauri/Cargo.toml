@@ -1,0 +1,18 @@
+[package]
+name = "pacman"
+version = "1.0.0"
+description = "Pac-Man — Rust (WASM) + TypeScript desktop app"
+authors = ["rachatarath-wq"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true

@@ -102,3 +102,33 @@ door to respawn.
 **TypeScript side** runs a `requestAnimationFrame` loop: each frame it calls
 `update(dt)`, reads `state_json()`, draws the cached wall layer plus dots,
 Pac-Man and ghosts, and triggers one-shot sound events.
+
+## Desktop app (Tauri)
+
+The same game is also packaged as a native desktop app with
+[Tauri](https://tauri.app) (Rust + the system webview). The app lives in
+`src-tauri/` and reuses the existing `web/` frontend — `tauri.conf.json` points
+`frontendDist` at `web/dist`, so the desktop window renders exactly what the
+browser serves.
+
+Requires the [Tauri prerequisites](https://tauri.app/start/prerequisites/) for
+your OS, plus the CLI (`npm i -g @tauri-apps/cli`). Build from the repo root:
+
+```bash
+tauri build
+```
+
+This builds the WASM core + frontend first, then compiles and bundles the app.
+Installers land in `src-tauri/target/release/bundle/` (`.dmg` on macOS, `.exe`
+(NSIS) on Windows, `.deb` on Linux).
+
+## Releasing
+
+- The web build deploys to GitHub Pages automatically on every push to `main`.
+- Desktop binaries are built in CI and attached to a GitHub Release whenever a
+  `v*` tag is pushed (see `.github/workflows/release.yml`). Cut a release by
+  tagging a commit:
+
+```bash
+git tag v1.1.0 && git push origin v1.1.0
+```
