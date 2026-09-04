@@ -1,0 +1,8 @@
+[package]
+name = "gamepad-detect"
+version = "0.1.0"
+edition = "2021"
+description = "Utility: enumerate HID devices and live-decode a gamepad's raw report (button bits, hat switch, analog stick)"
+
+[dependencies]
+hidapi = "2"

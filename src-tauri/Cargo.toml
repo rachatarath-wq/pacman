@@ -1,6 +1,6 @@
 [package]
 name = "pacman"
-version = "1.1.0"
+version = "1.2.0"
 description = "Pac-Man — Rust (WASM) + TypeScript desktop app"
 authors = ["rachatarath-wq"]
 edition = "2021"
@@ -10,6 +10,28 @@ tauri-build = { version = "2", features = [] }
 
 [dependencies]
 tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+
+# macOS controllers (incl. Apple's DriverKit-handled Xbox pads) are read through
+# the native GameController framework; gilrs' IOKit backend sees zero input
+# elements for those devices. Other platforms keep the gilrs backend.
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6"
+objc2-game-controller = { version = "0.3", default-features = false, features = [
+    "std",
+    "GCController",
+    "GCPhysicalInputProfile",
+    "GCControllerElement",
+    "GCExtendedGamepad",
+    "GCControllerDirectionPad",
+    "GCControllerAxisInput",
+    "GCControllerButtonInput",
+] }
+objc2-foundation = { version = "0.3", default-features = false, features = ["std", "NSArray", "NSObject"] }
+hidapi = "2"
+
+[target.'cfg(not(target_os = "macos"))'.dependencies]
+gilrs = "0.10"
 
 [profile.release]
 opt-level = "s"

@@ -1,7 +1,7 @@
 {
   "name": "pacman-rust-wasm",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "module",
   "scripts": {
     "wasm": "(cd .. && wasm-pack build --target web --out-dir web/pkg --out-name pacman --release)",
@@ -12,5 +12,8 @@
   "devDependencies": {
     "typescript": "^5.5.4",
     "vite": "^5.4.2"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0"
   }
 }

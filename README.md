@@ -70,11 +70,33 @@ For a production build: `cd web && npm run build` (outputs `web/dist/`).
 
 ## How to play
 
-- **Move** — arrow keys or `W`/`A`/`S`/`D`
-- **Pause / resume** — `Space` or `P` (or the Start/Pause button)
-- **Start** — `Enter` (or the Start button)
-- **Reset** — the Reset button
+- **Move** — arrow keys, `W`/`A`/`S`/`D`, click/tap the maze to steer, or a gamepad d-pad / left stick
+- **Pause / resume** — `Space` or `P`, the Start button, or the gamepad Start button
+- **Start** — `Enter`, the Start button, or the gamepad Start button
+- **Reset** — the Reset button, or the gamepad Select/Back button
 - **Mute** — the Mute button
+
+Clicking or tapping the maze drops a steer target (shown as a faint marker); Pac-Man
+walks toward it along open corridors, queueing turns the same way keyboard input
+does. Keyboard or gamepad input cancels the target. Gamepads are polled via the
+Web Gamepad API — d-pad and the left analog stick both steer, with a 0.35 deadzone.
+
+> **Gamepad notes** — two code paths, chosen automatically at runtime:
+>
+> - **Browser (Chrome/Firefox)** — reads the Web Gamepad API. The page must be
+>   focused and a button pressed once before `navigator.getGamepads()` exposes the
+>   pad; Safari support is spotty.
+> - **Tauri desktop app** — WKWebView has no Gamepad API, so the app reads the
+>   controller natively (GameController.framework on macOS, `gilrs` elsewhere,
+>   plus a raw-HID fallback for clones such as the SHANWAN pad) and pushes state to
+>   the frontend as `gamepad-state` events.
+>
+> A green "🎮 gamepad connected" tag appears above the buttons when a pad is
+> detected. D-pad and the left analog stick steer; Start toggles start/pause,
+> Select/Back resets. The desktop build also has a **🎮 menu** (button next to
+> Mute) with a live **Test** view and a **Remap** tab for rebinding the six
+> actions; remapping persists in `localStorage`. See `GAMEPAD.md` for the full
+> input pipeline and pad report layout.
 
 Eat every dot to clear the level. Power pellets (the larger, blinking dots) turn
 the ghosts blue for a few seconds — run into them for 200/400/800/1600 points.

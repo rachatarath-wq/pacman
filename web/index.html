@@ -52,7 +52,14 @@
         flex: 1;
         min-height: 0;
       }
-      canvas { display: block; }
+      canvas {
+        display: block;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        cursor: pointer;
+      }
       .overlay {
         position: absolute;
         inset: 0;
@@ -95,6 +102,169 @@
         font-size: 0.72rem;
         padding-bottom: 0.6rem;
       }
+      .gp-status {
+        color: #7dff9b;
+        margin-right: 0.9rem;
+      }
+      /* ---- gamepad modal ---- */
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(3, 3, 10, 0.72);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+      .modal[hidden] { display: none; }
+      .modal-card {
+        background: #10101f;
+        border: 1px solid #2a2a4a;
+        border-radius: 12px;
+        width: min(92vw, 460px);
+        max-height: 86vh;
+        overflow: auto;
+        padding: 1.1rem 1.3rem 1.3rem;
+        box-shadow: 0 12px 60px rgba(0, 0, 0, 0.6);
+      }
+      .modal-head {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      .modal-head h2 {
+        margin: 0;
+        font-size: 1.05rem;
+        letter-spacing: 0.05em;
+      }
+      .tabs {
+        display: flex;
+        gap: 0.35rem;
+        flex: 1;
+      }
+      .tab {
+        background: transparent;
+        border: 1px solid #2a2a4a;
+        border-radius: 6px;
+        padding: 0.3rem 0.8rem;
+        font-size: 0.82rem;
+        color: #8a8ab0;
+      }
+      .tab.active {
+        background: #1d1de0;
+        border-color: #4f4fff;
+        color: #fff;
+      }
+      .x {
+        background: transparent;
+        border: none;
+        color: #8a8ab0;
+        font-size: 1.1rem;
+        padding: 0.2rem 0.45rem;
+        line-height: 1;
+      }
+      .x:hover { color: #fff; background: transparent; }
+      .panel { min-height: 200px; }
+      .conn {
+        font-size: 0.9rem;
+        color: #ff6b6b;
+        margin-bottom: 0.6rem;
+      }
+      .conn.on { color: #7dff9b; }
+      .hat {
+        font-size: 1.4rem;
+        color: var(--accent);
+        margin-bottom: 0.5rem;
+      }
+      .stick-box {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin: 0 0 0.8rem;
+        border: 1px solid #2a2a4a;
+        border-radius: 8px;
+        background: #0a0a16;
+      }
+      .stick-box::before {
+        content: '';
+        position: absolute;
+        left: 50%; top: 0; bottom: 0;
+        border-left: 1px dashed #22223e;
+      }
+      .stick-box::after {
+        content: '';
+        position: absolute;
+        top: 50%; left: 0; right: 0;
+        border-top: 1px dashed #22223e;
+      }
+      .stick-dot {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        margin: -6px 0 0 -6px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 10px #ff9d00;
+      }
+      .btn-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.4rem;
+      }
+      .btn-cell {
+        text-align: center;
+        font-size: 0.72rem;
+        padding: 0.35rem 0;
+        border: 1px solid #2a2a4a;
+        border-radius: 6px;
+        color: #6b6b8a;
+        background: #0a0a16;
+      }
+      .btn-cell.on {
+        background: #1d1de0;
+        border-color: #4f4fff;
+        color: #fff;
+      }
+      .remap-note {
+        font-size: 0.76rem;
+        color: #6b6b8a;
+        margin: 0 0 0.9rem;
+        line-height: 1.5;
+      }
+      .action-row {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.45rem 0;
+        border-bottom: 1px solid #1a1a2e;
+      }
+      .action-row:last-child { border-bottom: none; }
+      .action-name {
+        width: 7rem;
+        font-size: 0.85rem;
+        color: #eaeaff;
+      }
+      .action-binding {
+        flex: 1;
+        font-size: 0.82rem;
+        color: var(--accent);
+        font-variant-numeric: tabular-nums;
+      }
+      .rebind {
+        padding: 0.3rem 0.7rem;
+        font-size: 0.78rem;
+      }
+      .action-row.capturing {
+        background: rgba(29, 29, 224, 0.18);
+      }
+      .action-row.capturing .action-binding {
+        animation: pulse 700ms ease-in-out infinite alternate;
+      }
+      @keyframes pulse {
+        from { opacity: 0.4; }
+        to { opacity: 1; }
+      }
     </style>
   </head>
   <body>
@@ -114,8 +284,24 @@
         <button id="btn-start">Start</button>
         <button id="btn-reset">Reset</button>
         <button id="btn-mute">Mute</button>
+        <button id="btn-gamepad" style="display:none" title="Gamepad test & remap">🎮</button>
       </div>
-      <p class="hint">Arrows / WASD to move · Space or P to pause · Enter to start</p>
+      <p class="hint"><span id="gp-status" class="gp-status" style="display:none">🎮 gamepad connected</span>Arrows / WASD · click or tap to steer · gamepad d-pad or stick · Space/P pause · Enter start</p>
+    </div>
+
+    <div id="gp-menu" class="modal" hidden>
+      <div class="modal-card">
+        <div class="modal-head">
+          <h2>🎮 Gamepad</h2>
+          <div class="tabs">
+            <button class="tab active" data-tab="test">Test</button>
+            <button class="tab" data-tab="remap">Remap</button>
+          </div>
+          <button id="gp-close" class="x" title="Close">✕</button>
+        </div>
+        <div id="gp-test" class="panel"></div>
+        <div id="gp-remap" class="panel" hidden></div>
+      </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
