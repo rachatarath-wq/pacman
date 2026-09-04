@@ -1,7 +1,7 @@
 {
   "name": "pacman-rust-wasm",
   "private": true,
-  "version": "1.2.0",
+  "version": "1.2.1",
   "type": "module",
   "scripts": {
     "wasm": "(cd .. && wasm-pack build --target web --out-dir web/pkg --out-name pacman --release)",
